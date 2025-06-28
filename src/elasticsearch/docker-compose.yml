@@ -1,0 +1,31 @@
+services:
+  elasticsearch:
+    image: elasticsearch:9.0.2
+    container_name: elasticsearch
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 10m
+        max-file: 3
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      discovery.type: single-node
+      http.host: 0.0.0.0
+      transport.host: 0.0.0.0
+      xpack.security.enabled: true
+      bootstrap.memory_lock: true
+    networks:
+      - elk-network
+
+volumes:
+  es_data:
+    name: es_data
+
+
+networks:
+  elk-network:
+    name: elk-network
+    driver: bridge
