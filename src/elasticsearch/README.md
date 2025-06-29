@@ -1,16 +1,16 @@
-# Elasticsearch Service
+# 🔍 Elasticsearch Service
 
 Docker-based Elasticsearch deployment with security enabled.
 
-## Features
+## ✨ Features
 
-- Elasticsearch with X-Pack security (configurable version)
-- Authentication with configurable password
-- Multiple environments (development, production, devcontainer)
-- SSL/TLS support via cert-manager integration
-- Persistent data storage with Docker volumes
+- 🔒 Elasticsearch with X-Pack security (configurable version)
+- 🔑 Authentication with configurable password
+- 🌍 Multiple environments (development, production, devcontainer)
+- 🔐 SSL/TLS support via cert-manager integration
+- 💾 Persistent data storage with Docker volumes
 
-## Deployment
+## 🚀 Deployment
 
 ```sh
 # Development environment (local ports exposed)
@@ -26,7 +26,7 @@ Docker-based Elasticsearch deployment with security enabled.
 ./deploy.sh --help
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 Create `.env` file from template:
 
@@ -47,71 +47,66 @@ LETSENCRYPT_HOST=elastic.yourdomain.com
 LETSENCRYPT_EMAIL=your-email@domain.com
 ```
 
-## Environment Details
+## 🌍 Environment Details
 
-### Development
+### 🛠️ Development
 
 - **Ports:** 9200, 9300 exposed to host
 - **Network:** `elk-network` (isolated)
 - **SSL:** Disabled
 
-### Production
+### 🏭 Production
 
 - **Ports:** Internal only (proxied via nginx)
 - **Network:** `cert-network` + `elk-network`
 - **SSL:** Automatic Let's Encrypt certificates
 
-### DevContainer
+### 🐳 DevContainer
 
 - **Network:** `elasticsearch-stack-workspace-network`
 - **Usage:** VS Code DevContainer development
 
-## Access
+## 🔐 Keycloak Integration
 
-### Development
+Optional OIDC authentication via Keycloak.
+
+### ⚙️ Setup Keycloak Client
+
+1. Create client in Keycloak Admin Console:
+   - **Client ID**: `elasticsearch`
+   - **Client type**: `OpenID Connect`
+   - **Client authentication**: `On`
+   - **Valid redirect URIs**: `http://localhost:5601/api/security/oidc/callback`
+
+2. Configure groups mapping (Keycloak 23+):
+   - **Client Scopes** → **elasticsearch-dedicated** → **Mappers** → **Create**
+   - **Mapper type**: `Group Membership`
+   - **Name**: `groups`
+   - **Token claim name**: `groups`
+   - **Add to access token**: `On`
+
+### 🔧 Keycloak Configuration
+
+Configure variables in `.env`:
 
 ```bash
-curl -u elastic:${ELASTIC_PASSWORD} http://localhost:9200
+KEYCLOAK_PROTOCOL=http
+KEYCLOAK_HOST=localhost
+KEYCLOAK_PORT=8080
+KEYCLOAK_REALM=master
+KEYCLOAK_CLIENT_ID=elasticsearch
+KEYCLOAK_CLIENT_SECRET=your-secret
 ```
 
-### Production
+### 🚀 Keycloak Deployment
 
-```sh
-curl -u elastic:${ELASTIC_PASSWORD} https://elastic.yourdomain.com
+```bash
+./deploy.sh --development --keycloak
+./deploy.sh --production --keycloak
 ```
 
-## Management
-
-```sh
-# View logs
-docker-compose logs -f elasticsearch
-
-# Stop services
-docker-compose down
-
-# Remove data (⚠️ destructive)
-docker-compose down -v
-```
-
-## Integration
+## 🔗 Integration
 
 ### With cert-manager
 
 For SSL in production, this service integrates with the cert-manager stack. See [`../cert-manager/README.md`](../cert-manager/README.md).
-
-### With other services
-
-```yaml
-services:
-  your-service:
-    networks:
-      - elk-network
-    environment:
-      ELASTICSEARCH_URL: http://elasticsearch:9200
-      ELASTICSEARCH_USERNAME: elastic
-      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD}
-
-networks:
-  elk-network:
-    name: elk-network
-    external: true

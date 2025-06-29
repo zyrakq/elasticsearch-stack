@@ -1,23 +1,36 @@
 #!/bin/bash
 
 # Elasticsearch Deployment Script
-# Usage: ./deploy.sh [--development|--devcontainer|--production]
+# Usage: ./deploy.sh [--development|--devcontainer|--production] [--keycloak]
 
 case "$1" in
     --development|-d)
-        docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
+            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.dev.yml up -d --build
+        else
+            docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build
+        fi
         ;;
     --devcontainer|-dc)
-        docker-compose -f docker-compose.yml -f docker-compose.devcontainer.yml up -d --build
+        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
+            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.devcontainer.yml up -d --build
+        else
+            docker-compose -f docker-compose.yml -f docker-compose.devcontainer.yml up -d --build
+        fi
         ;;
     --production|-p)
-        docker-compose -f docker-compose.yml -f docker-compose.cert.yml up -d --build
+        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
+            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.cert.yml up -d --build
+        else
+            docker-compose -f docker-compose.yml -f docker-compose.cert.yml up -d --build
+        fi
         ;;
     --help|-h|*)
-        echo "Usage: $0 [--development|--devcontainer|--production]"
+        echo "Usage: $0 [--development|--devcontainer|--production] [--keycloak]"
         echo ""
-        echo "  --development, -d     Development environment (ports 8080, 5432)"
-        echo "  --devcontainer, -dc   DevContainer environment"
-        echo "  --production, -p      Production environment (SSL)"
+        echo "Examples:"
+        echo "  $0 --development"
+        echo "  $0 --development --keycloak"
+        echo "  $0 --production --keycloak"
         ;;
 esac

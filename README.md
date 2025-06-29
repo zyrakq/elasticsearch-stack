@@ -1,24 +1,27 @@
-# Elasticsearch Stack
+# 🔍 Elasticsearch Stack
 
 Docker-based Elasticsearch deployment with SSL certificate management.
 
-## Features
+## ✨ Features
 
-- Elasticsearch with security enabled (configurable version)
-- Multiple environments (development, production, devcontainer)
-- SSL certificates via Let's Encrypt
-- Modular architecture with git submodules
+- 🔒 Elasticsearch with X-Pack security (configurable version)
+- 🔑 Authentication with configurable password
+- 🌍 Multiple environments (development, production, devcontainer)
+- 🔐 SSL/TLS support via Let's Encrypt
+- 💾 Persistent data storage with Docker volumes
+- 🔐 Optional Keycloak OIDC integration
+- 🧩 Modular architecture with git submodules
 
-## Quick Start
+## 🚀 Quick Start
 
-1. **Clone with submodules:**
+1. **📥 Clone with submodules:**
 
    ```bash
    git clone --recursive <repository-url>
    cd elasticsearch-stack
    ```
 
-2. **Configure environment:**
+2. **⚙️ Configure environment:**
 
    ```bash
    cd src/elasticsearch
@@ -26,14 +29,20 @@ Docker-based Elasticsearch deployment with SSL certificate management.
    # Edit .env with your settings
    ```
 
-3. **Deploy:**
+3. **🚀 Deploy:**
 
    ```bash
+   # Basic deployment
    ./deploy.sh --development  # Local development
    ./deploy.sh --production   # Production with SSL
+   ./deploy.sh --devcontainer # DevContainer environment
+   
+   # With Keycloak OIDC integration
+   ./deploy.sh --development --keycloak
+   ./deploy.sh --production --keycloak
    ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```sh
 src/
@@ -41,26 +50,46 @@ src/
 └── cert-manager/     # SSL certificate management (submodule)
 ```
 
-## Configuration
+## ⚙️ Configuration
 
 Edit [`src/elasticsearch/.env`](src/elasticsearch/.env.example):
 
 ```sh
+# Required
 ELASTICSEARCH_VERSION=9.0.2
 ELASTIC_PASSWORD=your_secure_password
 
-# For production
+# Required for production
 VIRTUAL_HOST=elastic.yourdomain.com
 LETSENCRYPT_HOST=elastic.yourdomain.com
 LETSENCRYPT_EMAIL=your-email@domain.com
+
+# Optional: Keycloak OIDC Integration
+KEYCLOAK_PROTOCOL=http
+KEYCLOAK_HOST=localhost
+KEYCLOAK_PORT=8080
+KEYCLOAK_REALM=master
+KEYCLOAK_CLIENT_ID=elasticsearch
+KEYCLOAK_CLIENT_SECRET=your-client-secret-here
 ```
 
-## Access
+## 🌐 Access
 
 - **Development:** <http://localhost:9200>
 - **Production:** <https://your-domain.com>
 - **Credentials:** `elastic` / `${ELASTIC_PASSWORD}`
+- **With Keycloak:** OIDC authentication via configured realm
 
-## License
+## 🔐 Keycloak Integration
+
+Optional OIDC authentication support:
+
+1. **Setup Keycloak client** with OpenID Connect
+2. **Configure groups mapping** for role-based access
+3. **Deploy with `--keycloak` flag** to enable integration
+
+See [`src/elasticsearch/README.md`](src/elasticsearch/README.md#-keycloak-integration) for detailed setup instructions.
+
+## 📄 License
 
 Dual-licensed under [MIT](LICENSE-MIT) and [Apache 2.0](LICENSE-APACHE)

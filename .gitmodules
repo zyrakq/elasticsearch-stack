@@ -1,3 +1,6 @@
 [submodule "src/cert-manager"]
 	path = src/cert-manager
 	url = https://github.com/zyrakq/cert-manager-stack.git
+[submodule "src/keycloak"]
+	path = src/keycloak
+	url = https://github.com/zyrakq/keycloak-stack
