@@ -1,0 +1,8 @@
+services:
+  elasticsearch:
+    networks:
+      - elasticsearch-stack-workspace-network
+
+networks:
+  elasticsearch-stack-workspace-network:
+    external: true
