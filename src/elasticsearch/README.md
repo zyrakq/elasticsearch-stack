@@ -99,12 +99,21 @@ Optional OIDC authentication via Keycloak.
 Configure variables in `.env`:
 
 ```bash
-KEYCLOAK_PROTOCOL=http
-KEYCLOAK_HOST=localhost
-KEYCLOAK_PORT=8080
+KEYCLOAK_BASE_URL=http://localhost:8080
 KEYCLOAK_REALM=master
 KEYCLOAK_CLIENT_ID=elasticsearch
 KEYCLOAK_CLIENT_SECRET=your-secret
+```
+
+**Note:** Client secret is automatically added to Elasticsearch keystore during image build.
+
+### 🔐 Step CA Trust Configuration
+
+For Step CA deployments, Elasticsearch needs to trust the Step CA intermediate certificate to access Keycloak via HTTPS (required for OIDC):
+
+```bash
+# Enable Step CA trust (default: true)
+STEP_CA_TRUST=true
 ```
 
 ### 🚀 Keycloak Deployment

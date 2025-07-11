@@ -3,6 +3,11 @@
 
 services:
   elasticsearch:
+    build:
+      context: .
+      dockerfile: Dockerfile.keycloak
+      args:
+        ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION:-9.0.2}
     environment:
       # OIDC Configuration for Keycloak integration
       - "xpack.security.authc.token.enabled=true"
@@ -10,15 +15,18 @@ services:
       - "xpack.security.authc.realms.oidc.oidc1.rp.client_id=${KEYCLOAK_CLIENT_ID:-elasticsearch}"
       - "xpack.security.authc.realms.oidc.oidc1.rp.response_type=code"
       - "xpack.security.authc.realms.oidc.oidc1.rp.requested_scopes=openid,profile,email,groups"
-      - "xpack.security.authc.realms.oidc.oidc1.rp.redirect_uri=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/api/security/oidc/callback"
-      - "xpack.security.authc.realms.oidc.oidc1.op.issuer=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}"
-      - "xpack.security.authc.realms.oidc.oidc1.op.authorization_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/auth"
-      - "xpack.security.authc.realms.oidc.oidc1.op.token_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/token"
-      - "xpack.security.authc.realms.oidc.oidc1.op.userinfo_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/userinfo"
-      - "xpack.security.authc.realms.oidc.oidc1.op.endsession_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/logout"
-      - "xpack.security.authc.realms.oidc.oidc1.op.jwkset_path=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/certs"
+      - "xpack.security.authc.realms.oidc.oidc1.rp.redirect_uri=${KEYCLOAK_BASE_URL:-http://localhost:8080}/api/security/oidc/callback"
+      - "xpack.security.authc.realms.oidc.oidc1.op.issuer=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}"
+      - "xpack.security.authc.realms.oidc.oidc1.op.authorization_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/auth"
+      - "xpack.security.authc.realms.oidc.oidc1.op.token_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/token"
+      - "xpack.security.authc.realms.oidc.oidc1.op.userinfo_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/userinfo"
+      - "xpack.security.authc.realms.oidc.oidc1.op.endsession_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/logout"
+      - "xpack.security.authc.realms.oidc.oidc1.op.jwkset_path=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/certs"
       - "xpack.security.authc.realms.oidc.oidc1.claims.principal=preferred_username"
       - "xpack.security.authc.realms.oidc.oidc1.claims.groups=groups"
+      # Trust Step CA intermediate certificate for HTTPS Keycloak access (required for OIDC)
+      - STEP_CA_TRUST=${STEP_CA_TRUST:-true}
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
     networks:
       - keycloak-network
 
