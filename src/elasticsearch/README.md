@@ -13,11 +13,14 @@ Docker-based Elasticsearch deployment with security enabled.
 ## 🚀 Deployment
 
 ```sh
-# Development environment (local ports exposed)
-./deploy.sh --development
+# Local development with port forwarding
+./deploy.sh --forwarding
 
-# Production environment (SSL with Let's Encrypt)
-./deploy.sh --production
+# Production with Let's Encrypt certificates
+./deploy.sh --letsencrypt
+
+# Virtual network with Step CA certificates
+./deploy.sh --step-ca
 
 # DevContainer environment
 ./deploy.sh --devcontainer
@@ -49,17 +52,23 @@ LETSENCRYPT_EMAIL=your-email@domain.com
 
 ## 🌍 Environment Details
 
-### 🛠️ Development
+### 🛠️ Forwarding (Local Development)
 
 - **Ports:** 9200, 9300 exposed to host
 - **Network:** `elk-network` (isolated)
 - **SSL:** Disabled
 
-### 🏭 Production
+### 🔐 Let's Encrypt (Production)
 
 - **Ports:** Internal only (proxied via nginx)
-- **Network:** `cert-network` + `elk-network`
+- **Network:** `letsencrypt-network` + `elk-network`
 - **SSL:** Automatic Let's Encrypt certificates
+
+### 🏢 Step CA (Virtual Network)
+
+- **Ports:** Internal only (proxied via nginx)
+- **Network:** `step-ca-network` + `elk-network`
+- **SSL:** Step CA managed certificates
 
 ### 🐳 DevContainer
 
@@ -101,12 +110,16 @@ KEYCLOAK_CLIENT_SECRET=your-secret
 ### 🚀 Keycloak Deployment
 
 ```bash
-./deploy.sh --development --keycloak
-./deploy.sh --production --keycloak
+./deploy.sh --forwarding --keycloak
+./deploy.sh --letsencrypt --keycloak
+./deploy.sh --step-ca --keycloak
 ```
 
 ## 🔗 Integration
 
-### With cert-manager
+### Certificate Management
 
-For SSL in production, this service integrates with the cert-manager stack. See [`../cert-manager/README.md`](../cert-manager/README.md).
+This service integrates with different certificate management stacks:
+
+- **Let's Encrypt:** [`../letsencrypt-manager/README.md`](../letsencrypt-manager/README.md) - For production deployments with internet access using public SSL certificates
+- **Step CA:** [`../step-ca-manager/README.md`](../step-ca-manager/README.md) - For virtual Docker networks without internet access using self-signed trusted certificate authority

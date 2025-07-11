@@ -5,7 +5,7 @@ services:
   elasticsearch:
     environment:
       # OIDC Configuration for Keycloak integration
-      # Order 2 ensures OIDC runs after basic auth (order 1)
+      - "xpack.security.authc.token.enabled=true"
       - "xpack.security.authc.realms.oidc.oidc1.order=2"
       - "xpack.security.authc.realms.oidc.oidc1.rp.client_id=${KEYCLOAK_CLIENT_ID:-elasticsearch}"
       - "xpack.security.authc.realms.oidc.oidc1.rp.response_type=code"
@@ -17,7 +17,6 @@ services:
       - "xpack.security.authc.realms.oidc.oidc1.op.userinfo_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/userinfo"
       - "xpack.security.authc.realms.oidc.oidc1.op.endsession_endpoint=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/logout"
       - "xpack.security.authc.realms.oidc.oidc1.op.jwkset_path=${KEYCLOAK_PROTOCOL:-http}://${KEYCLOAK_HOST:-localhost}:${KEYCLOAK_PORT:-8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/certs"
-      - "xpack.security.authc.realms.oidc.oidc1.rp.client_secret=${KEYCLOAK_CLIENT_SECRET}"
       - "xpack.security.authc.realms.oidc.oidc1.claims.principal=preferred_username"
       - "xpack.security.authc.realms.oidc.oidc1.claims.groups=groups"
     networks:

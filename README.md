@@ -1,95 +1,31 @@
 # 🔍 Elasticsearch Stack
 
-Docker-based Elasticsearch deployment with SSL certificate management.
+Docker-based Elasticsearch deployment with flexible certificate management options.
 
-## ✨ Features
+## 📦 Components
 
-- 🔒 Elasticsearch with X-Pack security (configurable version)
-- 🔑 Authentication with configurable password
-- 🌍 Multiple environments (development, production, devcontainer)
-- 🔐 SSL/TLS support via Let's Encrypt
-- 💾 Persistent data storage with Docker volumes
-- 🔐 Optional Keycloak OIDC integration
-- 🧩 Modular architecture with git submodules
+### Core Services
+
+- **[Elasticsearch](src/elasticsearch/README.md)** - Main Elasticsearch service with X-Pack security, authentication, and multiple deployment environments
+- **[Keycloak](src/keycloak/README.md)** - Identity and access management with OIDC integration support
+
+### Certificate Management
+
+### 🌐 [Let's Encrypt Manager](src/letsencrypt-manager/README.md)
+
+Automatic SSL certificate generation and renewal using Let's Encrypt for production deployments with internet access.
+
+### 🔒 [Step CA Manager](src/step-ca-manager/README.md)
+
+Self-signed trusted certificate authority for virtual Docker networks without internet access. Automatically manages and distributes CA certificates within isolated environments.
 
 ## 🚀 Quick Start
 
-1. **📥 Clone with submodules:**
-
-   ```bash
-   git clone --recursive <repository-url>
-   cd elasticsearch-stack
-   ```
-
-2. **⚙️ Configure environment:**
-
-   ```bash
-   cd src/elasticsearch
-   cp .env.example .env
-   # Edit .env with your settings
-   ```
-
-3. **🚀 Deploy:**
-
-   ```bash
-   # Basic deployment
-   ./deploy.sh --development  # Local development
-   ./deploy.sh --production   # Production with SSL
-   ./deploy.sh --devcontainer # DevContainer environment
-   
-   # With Keycloak OIDC integration
-   ./deploy.sh --development --keycloak
-   ./deploy.sh --production --keycloak
-   ```
-
-## 📁 Project Structure
-
-```sh
-src/
-├── elasticsearch/    # Main Elasticsearch service
-└── cert-manager/     # SSL certificate management (submodule)
-```
-
-## ⚙️ Configuration
-
-Edit [`src/elasticsearch/.env`](src/elasticsearch/.env.example):
-
-```sh
-# Required
-ELASTICSEARCH_VERSION=9.0.2
-ELASTIC_PASSWORD=your_secure_password
-
-# Required for production
-VIRTUAL_HOST=elastic.yourdomain.com
-LETSENCRYPT_HOST=elastic.yourdomain.com
-LETSENCRYPT_EMAIL=your-email@domain.com
-
-# Optional: Keycloak OIDC Integration
-KEYCLOAK_PROTOCOL=http
-KEYCLOAK_HOST=localhost
-KEYCLOAK_PORT=8080
-KEYCLOAK_REALM=master
-KEYCLOAK_CLIENT_ID=elasticsearch
-KEYCLOAK_CLIENT_SECRET=your-client-secret-here
-```
-
-## 🌐 Access
-
-- **Development:** <http://localhost:9200>
-- **Production:** <https://your-domain.com>
-- **Credentials:** `elastic` / `${ELASTIC_PASSWORD}`
-- **With Keycloak:** OIDC authentication via configured realm
-
-## 🔐 Keycloak Integration
-
-Optional OIDC authentication support:
-
-1. **Setup Keycloak client** with OpenID Connect
-2. **Configure groups mapping** for role-based access
-3. **Deploy with `--keycloak` flag** to enable integration
-
-See [`src/elasticsearch/README.md`](src/elasticsearch/README.md#-keycloak-integration) for detailed setup instructions.
+Each component has its own README with detailed setup instructions. Choose the certificate management solution that fits your deployment scenario.
 
 ## 📄 License
 
-Dual-licensed under [MIT](LICENSE-MIT) and [Apache 2.0](LICENSE-APACHE)
+This project is dual-licensed under:
+
+- [Apache License 2.0](LICENSE-APACHE)
+- [MIT License](LICENSE-MIT)
