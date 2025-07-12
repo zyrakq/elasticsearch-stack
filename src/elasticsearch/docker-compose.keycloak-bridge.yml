@@ -1,0 +1,25 @@
+# Docker Compose override for Keycloak external network integration
+# Usage: Used with --keycloak-network flag to enable external keycloak-network connectivity
+
+services:
+  # Add keycloak-network to elasticsearch service
+  elasticsearch:
+    networks:
+      - keycloak-network
+
+  # Helper service to ensure keycloak network exists and provide bridge connectivity
+  keycloak-network-bridge:
+    image: alpine:latest
+    container_name: elasticsearch-keycloak-bridge
+    profiles:
+      - keycloak-network
+    command: [ "echo", "Keycloak network bridge active" ]
+    networks:
+      - keycloak-network
+    depends_on:
+      - elasticsearch
+
+networks:
+  keycloak-network:
+    name: keycloak-network
+    external: true
