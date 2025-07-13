@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile.keycloak
       args:
         ELASTICSEARCH_VERSION: ${ELASTICSEARCH_VERSION:-9.0.2}
+    volumes:
+      - step-ca-certs:/etc/nginx/certs
     environment:
       # OIDC Configuration for Keycloak integration
       - "xpack.security.authc.token.enabled=true"
@@ -15,7 +17,7 @@ services:
       - "xpack.security.authc.realms.oidc.oidc1.rp.client_id=${KEYCLOAK_CLIENT_ID:-elasticsearch}"
       - "xpack.security.authc.realms.oidc.oidc1.rp.response_type=code"
       - "xpack.security.authc.realms.oidc.oidc1.rp.requested_scopes=openid,profile,email,groups"
-      - "xpack.security.authc.realms.oidc.oidc1.rp.redirect_uri=${KEYCLOAK_BASE_URL:-http://localhost:8080}/api/security/oidc/callback"
+      - "xpack.security.authc.realms.oidc.oidc1.rp.redirect_uri=${KIBANA_BASE_URL:-http://localhost:5601}/api/security/oidc/callback"
       - "xpack.security.authc.realms.oidc.oidc1.op.issuer=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}"
       - "xpack.security.authc.realms.oidc.oidc1.op.authorization_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/auth"
       - "xpack.security.authc.realms.oidc.oidc1.op.token_endpoint=${KEYCLOAK_BASE_URL:-http://localhost:8080}/realms/${KEYCLOAK_REALM:-master}/protocol/openid-connect/token"
@@ -27,3 +29,10 @@ services:
       # Trust Step CA intermediate certificate for HTTPS Keycloak access (required for OIDC)
       - STEP_CA_TRUST=${STEP_CA_TRUST:-true}
       - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - "xpack.security.http.ssl.enabled=true"
+      - "xpack.security.http.ssl.keystore.path=etc/nginx/certs/elasticsearch.chain.pem"
+
+volumes:
+  step-ca-certs:
+    name: step-ca-certs
+    external: true
