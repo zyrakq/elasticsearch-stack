@@ -1,39 +1,23 @@
 #!/bin/bash
 
 # Elasticsearch Deployment Script
-# Usage: ./deploy.sh [--forwarding|--devcontainer|--letsencrypt|--step-ca] [--keycloak]
+# Usage: ./deploy.sh [--forwarding|--devcontainer|--letsencrypt|--step-ca]
 
 case "$1" in
     --forwarding|-f)
-        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
-            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.forwarding.yml up -d --build
-        else
-            docker-compose -f docker-compose.yml -f docker-compose.forwarding.yml up -d --build
-        fi
+        docker-compose -f docker-compose.yml -f docker-compose.forwarding.yml up -d --build
         ;;
     --devcontainer|-dc)
-        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
-            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.devcontainer.yml up -d --build
-        else
-            docker-compose -f docker-compose.yml -f docker-compose.devcontainer.yml up -d --build
-        fi
+        docker-compose -f docker-compose.yml -f docker-compose.devcontainer.yml up -d --build
         ;;
     --letsencrypt|-le)
-        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
-            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.letsencrypt.yml up -d --build
-        else
-            docker-compose -f docker-compose.yml -f docker-compose.letsencrypt.yml up -d --build
-        fi
+        docker-compose -f docker-compose.yml -f docker-compose.letsencrypt.yml up -d --build
         ;;
     --step-ca|-sc)
-        if [ "$2" = "--keycloak" ] || [ "$2" = "-k" ]; then
-            docker-compose --profile keycloak -f docker-compose.yml -f docker-compose.keycloak.yml -f docker-compose.step-ca.yml up -d --build
-        else
-            docker-compose -f docker-compose.yml -f docker-compose.step-ca.yml up -d --build
-        fi
+        docker-compose -f docker-compose.yml -f docker-compose.step-ca.yml up -d --build
         ;;
     --help|-h|*)
-        echo "Usage: $0 [--forwarding|--devcontainer|--letsencrypt|--step-ca] [--keycloak]"
+        echo "Usage: $0 [--forwarding|--devcontainer|--letsencrypt|--step-ca]"
         echo ""
         echo "Certificate Management Options:"
         echo "  --forwarding    Local development with port forwarding"
@@ -43,8 +27,7 @@ case "$1" in
         echo ""
         echo "Examples:"
         echo "  $0 --forwarding"
-        echo "  $0 --forwarding --keycloak"
-        echo "  $0 --letsencrypt --keycloak"
+        echo "  $0 --letsencrypt"
         echo "  $0 --step-ca"
         ;;
 esac

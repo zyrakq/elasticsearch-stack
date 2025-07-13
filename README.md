@@ -7,7 +7,6 @@ Docker-based Elasticsearch deployment with flexible certificate management optio
 ### Core Services
 
 - **[Elasticsearch](src/elasticsearch/README.md)** - Main Elasticsearch service with X-Pack security, authentication, and multiple deployment environments
-- **[Keycloak](src/keycloak/README.md)** - Identity and access management with OIDC integration support
 
 ### Certificate Management
 
