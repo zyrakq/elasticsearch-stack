@@ -10,11 +10,11 @@ Docker-based Elasticsearch deployment with flexible certificate management optio
 
 ### Certificate Management
 
-### 🌐 [Let's Encrypt Manager](src/letsencrypt-manager/README.md)
+### 🌐 [Let's Encrypt Manager](modules/ssl-automation/letsencrypt-manager/README.md)
 
 Automatic SSL certificate generation and renewal using Let's Encrypt for production deployments with internet access.
 
-### 🔒 [Step CA Manager](src/step-ca-manager/README.md)
+### 🔒 [Step CA Manager](modules/ssl-automation/step-ca-manager/README.md)
 
 Self-signed trusted certificate authority for virtual Docker networks without internet access. Automatically manages and distributes CA certificates within isolated environments.
 

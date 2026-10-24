@@ -7,9 +7,6 @@ case "$1" in
     --forwarding|-f)
         docker-compose -f docker-compose.yml -f docker-compose.forwarding.yml up -d --build
         ;;
-    --devcontainer|-dc)
-        docker-compose -f docker-compose.yml -f docker-compose.devcontainer.yml up -d --build
-        ;;
     --letsencrypt|-le)
         docker-compose -f docker-compose.yml -f docker-compose.letsencrypt.yml up -d --build
         ;;
@@ -23,7 +20,6 @@ case "$1" in
         echo "  --forwarding    Local development with port forwarding"
         echo "  --letsencrypt   Production with Let's Encrypt certificates"
         echo "  --step-ca       Virtual network with Step CA certificates"
-        echo "  --devcontainer  DevContainer environment"
         echo ""
         echo "Examples:"
         echo "  $0 --forwarding"
